@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
@@ -8,23 +10,69 @@ class BluetoothDevice {
   final String address;
   final bool paired;
   final bool nearby;
+  const BluetoothDevice(
+    this.name,
+    this.address, {
+    this.nearby = false,
+    this.paired = false,
+  });
 
-  const BluetoothDevice(this.name, this.address, {this.nearby = false, this.paired = false});
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) || other is BluetoothDevice && runtimeType == other.runtimeType && name == other.name && address == other.address;
-
-  @override
-  int get hashCode => name.hashCode ^ address.hashCode;
+  BluetoothDevice copyWith({
+    String? name,
+    String? address,
+    bool? paired,
+    bool? nearby,
+  }) {
+    return BluetoothDevice(
+      name ?? this.name,
+      address ?? this.address,
+      paired: paired ?? this.paired,
+      nearby: nearby ?? this.nearby,
+    );
+  }
 
   Map<String, dynamic> toMap() {
-    return {'name': name, 'address': address};
+    return <String, dynamic>{
+      'name': name,
+      'address': address,
+      'paired': paired,
+      'nearby': nearby,
+    };
   }
+
+  factory BluetoothDevice.fromMap(Map<String, dynamic> map) {
+    return BluetoothDevice(
+      map['name'] as String,
+      map['address'] as String,
+      paired: map['paired'] as bool,
+      nearby: map['nearby'] as bool,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory BluetoothDevice.fromJson(String source) =>
+      BluetoothDevice.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'BluetoothDevice{name: $name, address: $address, paired: $paired, nearby: $nearby}';
+    return 'BluetoothDevice(name: $name, address: $address, paired: $paired, nearby: $nearby)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BluetoothDevice &&
+        other.name == name &&
+        other.address == address &&
+        other.paired == paired &&
+        other.nearby == nearby;
+  }
+
+  @override
+  int get hashCode {
+    return name.hashCode ^ address.hashCode ^ paired.hashCode ^ nearby.hashCode;
   }
 }
 
@@ -32,7 +80,8 @@ class FlutterScanBluetooth {
   static final _singleton = FlutterScanBluetooth._();
   final MethodChannel _channel = const MethodChannel('flutter_scan_bluetooth');
   final List<BluetoothDevice> _pairedDevices = [];
-  final StreamController<BluetoothDevice> _controller = StreamController.broadcast();
+  final StreamController<BluetoothDevice> _controller =
+      StreamController.broadcast();
   final StreamController<bool> _scanStopped = StreamController.broadcast();
 
   factory FlutterScanBluetooth() => _singleton;
@@ -60,9 +109,11 @@ class FlutterScanBluetooth {
   }
 
   Future<void> startScan({pairedDevices = false}) async {
-    final bondedDevices = await _channel.invokeMethod('action_start_scan', pairedDevices);
+    final bondedDevices =
+        await _channel.invokeMethod('action_start_scan', pairedDevices);
     for (var device in bondedDevices) {
-      final d = BluetoothDevice(device['name'], device['address'], paired: true);
+      final d =
+          BluetoothDevice(device['name'], device['address'], paired: true);
       _pairedDevices.add(d);
       _controller.add(d);
     }
@@ -80,7 +131,9 @@ class FlutterScanBluetooth {
       device['name'],
       device['address'],
       nearby: true,
-      paired: _pairedDevices.firstWhereOrNull((item) => item.address == device['address']) != null,
+      paired: _pairedDevices
+              .firstWhereOrNull((item) => item.address == device['address']) !=
+          null,
     ));
   }
 }
