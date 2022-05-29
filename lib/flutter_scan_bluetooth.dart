@@ -57,8 +57,17 @@ class BluetoothDevice {
 
   String toJson() => json.encode(toMap());
 
-  factory BluetoothDevice.fromJson(String source) =>
-      BluetoothDevice.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory BluetoothDevice.fromJson(String source) {
+    try {
+      return BluetoothDevice.fromMap(
+          json.decode(source) as Map<String, dynamic>);
+    } catch (e) {
+      return BluetoothDevice(
+        null,
+        null,
+      );
+    }
+  }
 
   @override
   String toString() {
