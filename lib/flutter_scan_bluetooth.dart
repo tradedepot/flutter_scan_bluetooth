@@ -6,15 +6,17 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 
 class BluetoothDevice {
-  final String name;
-  final String address;
-  final bool paired;
-  final bool nearby;
+  final String? name;
+  final String? address;
+  final bool? paired;
+  final bool? nearby;
+  final int? type;
   const BluetoothDevice(
     this.name,
     this.address, {
     this.nearby = false,
     this.paired = false,
+    this.type = 0,
   });
 
   BluetoothDevice copyWith({
@@ -22,12 +24,14 @@ class BluetoothDevice {
     String? address,
     bool? paired,
     bool? nearby,
+    int? type,
   }) {
     return BluetoothDevice(
       name ?? this.name,
       address ?? this.address,
       paired: paired ?? this.paired,
       nearby: nearby ?? this.nearby,
+      type: type ?? this.type,
     );
   }
 
@@ -37,15 +41,17 @@ class BluetoothDevice {
       'address': address,
       'paired': paired,
       'nearby': nearby,
+      'type': type,
     };
   }
 
   factory BluetoothDevice.fromMap(Map<String, dynamic> map) {
     return BluetoothDevice(
-      map['name'] as String,
-      map['address'] as String,
-      paired: map['paired'] as bool,
-      nearby: map['nearby'] as bool,
+      map['name'] as String?,
+      map['address'] as String?,
+      paired: map['paired'] as bool?,
+      nearby: map['nearby'] as bool?,
+      type: map['type'] as int?,
     );
   }
 
