@@ -187,9 +187,7 @@ class FlutterScanBluetoothPlugin
                 && activity.checkCallingOrSelfPermission(BLUETOOTH_ADMIN) == PERMISSION_GRANTED
                 && activity.checkCallingOrSelfPermission(BLUETOOTH) == PERMISSION_GRANTED
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            isPermsOk = activity.checkCallingOrSelfPermission(BLUETOOTH) == PERMISSION_GRANTED
-                    && activity.checkCallingOrSelfPermission(BLUETOOTH_ADMIN) == PERMISSION_GRANTED
-                    && activity.checkCallingOrSelfPermission(BLUETOOTH_SCAN) == PERMISSION_GRANTED
+            isPermsOk = activity.checkCallingOrSelfPermission(BLUETOOTH_SCAN) == PERMISSION_GRANTED
                     && activity.checkCallingOrSelfPermission(BLUETOOTH_CONNECT) == PERMISSION_GRANTED
         }
 
