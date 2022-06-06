@@ -215,7 +215,7 @@ class FlutterScanBluetoothPlugin
             onPermissionRefused = onRefused
             var perms = arrayOf(ACCESS_FINE_LOCATION, BLUETOOTH, BLUETOOTH_ADMIN)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                perms = arrayOf(BLUETOOTH, BLUETOOTH_ADMIN, BLUETOOTH_SCAN, BLUETOOTH_CONNECT)
+                perms = arrayOf(BLUETOOTH_SCAN, BLUETOOTH_CONNECT)
             }
             ActivityCompat.requestPermissions(activityBinding.activity, perms, REQUEST_PERMISSION)
         }
