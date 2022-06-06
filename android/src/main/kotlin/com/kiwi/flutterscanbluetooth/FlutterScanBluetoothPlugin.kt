@@ -197,9 +197,13 @@ class FlutterScanBluetoothPlugin
                 onPermissionRefused = onRefused
                 GpsUtils(activity).turnGPSOn {
                     if (it) {
-                        onGranted()
+                        if (onPermissionGranted != null) {
+                            onGranted()
+                        }
                     } else {
-                        onRefused("error_no_gps", "Gps need to be turned on to scan BT devices")
+                        if (onPermissionRefused != null) {
+                            onPermissionRefused("error_no_gps", "Gps need to be turned on to scan BT devices")
+                        }
                     }
                     onPermissionGranted = null
                     onPermissionRefused = null
